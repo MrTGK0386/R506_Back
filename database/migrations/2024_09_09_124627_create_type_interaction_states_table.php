@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('type_interaction_states', static function (Blueprint $table) {
-           $table->id();
-           $table->string('name');
-           $table->float('multiplier');
-           $table->timestamps();
+        Schema::create('type_interaction_states', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->float('multiplier');
+            $table->timestamps();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('type_interaction_states');
     }
 };
