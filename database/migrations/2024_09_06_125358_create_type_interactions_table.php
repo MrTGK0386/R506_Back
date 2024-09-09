@@ -18,7 +18,7 @@ return new class extends Migration
             $table->ForeignIdFor(App\Models\TypeInteractionState::class)->constrained()->OnDelete('cascade');
             $table->timestamps();
 
-            $table->unique(['type_interaction_id', 'interaction_state_id']);
+            $table->unique(['from_type_id', 'to_type_id'],'type');
         });
     }
 
