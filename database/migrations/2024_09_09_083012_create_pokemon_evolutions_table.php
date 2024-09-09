@@ -22,7 +22,7 @@ return new class extends Migration
             $table->ForeignIdFor(App\Models\Type::class, 'known_move_type_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('location')->nullable();
             $table->integer('min_affection')->nullable();
-            $table->integer('min_affection')->nullable();
+            $table->integer('min_happiness')->nullable();
             $table->integer('min_level')->nullable();
             $table->boolean('need_overworld_rain');
             $table->ForeignIdFor(App\Models\Pokemon::class, 'party_species_id')->nullable()->constrained()->onDelete('cascade');

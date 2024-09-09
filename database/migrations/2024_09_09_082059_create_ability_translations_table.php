@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('ability_translations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId(App\Models\Ability::class)->constrained()->onDelete('cascade');
+            $table->ForeignIdFor(App\Models\Ability::class)->constrained()->onDelete('cascade');
             $table->string('locale')->index();
             $table->string('name');
             $table->string('description')->nullable();
             $table->text('effect')->nullable();
             $table->timestamps();
 
-            $table->unique(['locale', 'ability_id']);
+            $table->unique(['ability_id','locale']);
         });
     }
 

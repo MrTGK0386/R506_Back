@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('power');
             $table->integer('pp');
             $table->integer('priority');
-            $table->ForeingIdFor(App\Models\Types::class);
+            $table->ForeignIdFor(App\Models\Type::class);
             $table->timestamps();
 
         });

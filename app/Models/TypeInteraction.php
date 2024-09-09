@@ -13,7 +13,7 @@ class TypeInteraction extends Model
         return $this->belongsToMany(Type::class);
     }
 
-    public function typeInteractionsStates(){
+    public function typeInteractionState(){
         return $this->hasMany(TypeInteractionState::class);
     }
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->timestamps();
 
-            $table->unique(['move_damage_class_id', 'locale']);
+            $table->unique(['move_damage_class_id', 'locale'],'move_damage_class_translations_unique');
         });
     }
 
