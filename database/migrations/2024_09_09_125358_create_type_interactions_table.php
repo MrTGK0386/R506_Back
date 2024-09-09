@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('type_interactions', function (Blueprint $table) {
             $table->id();
-            $table->ForeignIdFor(App\Models\Types::class)->constrained()->OnDelete('cascade');
-            $table->ForeignIdFor(App\Models\Types::class)->constrained()->OnDelete('cascade');
-            $table->ForeignIdFor(App\Models\TypeInteractionStates::class)->constrained()->OnDelete('cascade');
+            $table->ForeignIdFor(App\Models\Type::class)->constrained()->OnDelete('cascade');
+            $table->ForeignIdFor(App\Models\Type::class)->constrained()->OnDelete('cascade');
+            $table->ForeignIdFor(App\Models\TypeInteractionState::class)->constrained()->OnDelete('cascade');
             $table->timestamps();
 
             $table->unique(['type_id', 'interaction_state_id']);
