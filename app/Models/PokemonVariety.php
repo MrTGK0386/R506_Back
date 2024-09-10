@@ -29,4 +29,12 @@ class PokemonVariety extends Model implements TranslatableContract
     {
         return $this->hasOne(PokemonVarietySprite::class);
     }
+
+    public function pokemonLearnMoves(){
+        return $this->hasMany(PokemonLearnMove::class);
+    }
+
+    public function pokemonEvolutions(){
+        return $this->hasMany(PokemonEvolution::class);
+    }
 }

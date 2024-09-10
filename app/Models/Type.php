@@ -18,4 +18,18 @@ class Type extends Model implements TranslatableContract
     protected $casts = [
       'sprite_url' => 'string',
     ];
+
+    public function pokemonEvolutions(){
+        return $this->hasMany(PokemonEvolution::class);
+    }
+
+    public function typeInteractions(){
+        return $this->hasMany(TypeInteraction::class);
+    }
+
+    public function moves(){
+        return $this->hasMany(Move::class);
+    }
+            
+
 }

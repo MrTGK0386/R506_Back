@@ -19,7 +19,9 @@ class EvolutionTrigger extends Model implements TranslatableContract
         'slug'=>'string'
     ];
 
-    public function pokemoneEvolutions(){
+    public function pokemonEvolutions(){
         return $this->hasMany(PokemonEvolution::class);
     }
+
+
 }
