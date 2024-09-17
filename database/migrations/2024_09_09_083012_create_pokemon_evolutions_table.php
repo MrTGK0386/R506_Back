@@ -16,7 +16,7 @@ return new class extends Migration
             $table->ForeignId('pokemon_variety_id')->nullable()->constrained('pokemon_varieties')->onDelete('cascade');
             $table->ForeignId('evolves_to_id')->nullable()->constrained('pokemon_varieties')->onDelete('cascade');
             $table->boolean('gender')->nullable();
-            $table->ForeignId('help_item_id')->nullable()->constrained('items')->onDelete('cascade');
+            $table->ForeignId('held_item_id')->nullable()->constrained('items')->onDelete('cascade');
             $table->ForeignId('item_id')->nullable()->constrained('items')->onDelete('cascade');
             $table->ForeignId('known_move_id')->nullable()->constrained('moves')->onDelete('cascade');
             $table->ForeignId( 'known_move_type_id')->nullable()->constrained('types')->onDelete('cascade');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('min_affection')->nullable();
             $table->integer('min_happiness')->nullable();
             $table->integer('min_level')->nullable();
-            $table->boolean('need_overworld_rain');
+            $table->boolean('needs_overworld_rain');
             $table->ForeignId('party_species_id')->nullable()->constrained('pokemon')->onDelete('cascade');
             $table->ForeignId('party_type_id')->nullable()->constrained('types')->onDelete('cascade');
             $table->integer('relative_physical_stats')->nullable();

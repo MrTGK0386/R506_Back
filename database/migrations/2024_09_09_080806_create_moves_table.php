@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('moves', function (Blueprint $table) {
             $table->id();
-            $table->integer('accuracy');
-            $table->ForeignIdFor(App\Models\Move::class)->constrained()->onDelete('cascade');
-            $table->integer('power');
+            $table->integer('accuracy')->nullable();
+            $table->ForeignIdFor(App\Models\MoveDamageClass::class)->constrained()->onDelete('cascade');
+            $table->integer('power')->nullable();
             $table->integer('pp');
             $table->integer('priority');
             $table->ForeignIdFor(App\Models\Type::class);
