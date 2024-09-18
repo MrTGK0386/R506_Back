@@ -43,6 +43,7 @@ class PokemonSeeder extends Seeder
      */
     public function run(): void
     {
+
         $this->seedTypes();
         $this->seedMoveDamageClasses();
         $this->seedMoves();
@@ -522,7 +523,7 @@ class PokemonSeeder extends Seeder
                 ]);
 
                 foreach ($pokemon->varieties as $variety) {
-                    $this->command->info('      🟣 Fetching ' . $variety->pokemon->name . '...');
+                    //$this->command->info('      🟣 Fetching ' . $variety->pokemon->name . '...');
 
                     $pokemonVariety = $this->request($variety->pokemon->url);
 
