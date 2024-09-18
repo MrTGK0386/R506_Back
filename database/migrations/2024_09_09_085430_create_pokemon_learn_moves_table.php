@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pokemon_learn_moves', function (Blueprint $table) {
             $table->id();
-            $table->ForeignIdFor(App\Models\Pokemon::class);
+            $table->ForeignIdFor(App\Models\PokemonVariety::class);
             $table->ForeignIdFor(App\Models\Move::class);
             $table->ForeignIdFor(App\Models\MoveLearnMethod::class);
             $table->ForeignIdFor(App\Models\GameVersion::class);
