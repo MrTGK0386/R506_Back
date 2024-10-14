@@ -9,9 +9,9 @@ class TypeInteractionState extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','multiplier'];
+    protected $fillable=['name','multiplier'];
 
-    protected $casts = [
-        'name' => 'string',
-        'multiplier' => 'integer'];
+    public function typeInteraction(){
+        return $this->hasMany(typeInteraction::class);
+    }
 }

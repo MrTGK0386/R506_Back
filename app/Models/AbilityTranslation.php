@@ -9,5 +9,6 @@ class AbilityTranslation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description','effective'];
+    protected $fillable = ['name','description','effect'];
+
 }
