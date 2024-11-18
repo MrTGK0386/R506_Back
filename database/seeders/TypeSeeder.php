@@ -35,11 +35,15 @@ class TypeSeeder extends Seeder
         ];
 
         foreach ($types as $type) {
-            Type::where('id', $type['id'])->update([
-                'color' => $type['color'],
-                'icon' => $type['icon'],
-                'background' => $type['background'],
-            ]);
+            Type::updateOrCreate(
+                ['id' => $type['id']], // Condition de recherche
+                [
+                    'color' => $type['color'],
+                    'icon' => $type['icon'],
+                    'background' => $type['background'],
+                ]
+            );
+            $this->command->info("Un type a été ajouté/mis à jour dans la base");
         }
     }
 }
