@@ -13,8 +13,6 @@ class Type extends Model implements TranslatableContract
 
     public $translatedAttributes = ['name'];
 
-    protected $fillable = ['sprite_url'];
-
     public function knowMoveTypeId()
     {
         return $this->hasMany(PokemonEvolution::class, 'know_move_type_id');
