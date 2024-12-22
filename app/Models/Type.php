@@ -25,7 +25,7 @@ class Type extends Model implements TranslatableContract
 
     public function interactTo()
     {
-        $this->belongsToMany(Type::class, 'type_interaction', 'from_type_id', 'to_type_id')
+        return $this->belongsToMany(Type::class, 'type_interactions', 'from_type_id', 'to_type_id')
             ->withPivot('type_interaction_state_id');
     }
 

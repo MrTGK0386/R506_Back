@@ -218,6 +218,47 @@ class PokemonSeeder extends Seeder
         return $item ? $item->id : null;
     }
 
+    private function getTypeColor($id){
+        $colors = [
+            1 => '#919AA2', 2 => '#CE416B', 3 => '#89AAE3',
+            4 => '#C699E5', 5 => '#DB9E6E', 6 => '#C5B78C',
+            7 => '#95BD43', 8 => '#5269AD', 9 => '#5A8EA2',
+            10 => '#FF9D55', 11 => '#71B1FF', 12 => '#9CDB8D',
+            13 => '#F4D23C', 14 => '#D76088', 15 => '#73CEC0',
+            16 => '#0B6DC3', 17 => '#7B6C8F', 18 => '#FFA3E5'
+        ];
+        return $colors[$id] ?? null;
+    }
+
+    private function getTypeIcon($id)
+    {
+        $baseUrl = 'https://raw.githubusercontent.com/MrTGK0386/R505-front/refs/heads/master/public/assets/TypesLogo/';
+        $icons = [
+            1 => 'Normal.svg', 2 => 'Fighting.svg', 3 => 'Fly.svg',
+            4 => 'Poison.svg', 5 => 'Ground.svg', 6 => 'Rock.svg',
+            7 => 'Bug.svg', 8 => 'Ghost.svg', 9 => 'Steel.svg',
+            10 => 'Fire.svg', 11 => 'Water.svg', 12 => 'Grass.svg',
+            13 => 'Elek.svg', 14 => 'Psy.svg', 15 => 'Ice.svg',
+            16 => 'Dragon.svg', 17 => 'Dark.svg', 18 => 'Fairy.svg'
+        ];
+        return $baseUrl . ($icons[$id] ?? '');
+    }
+
+    private function getTypeBackground($id)
+    {
+        $baseUrl = 'https://raw.githubusercontent.com/MrTGK0386/R505-front/refs/heads/master/public/assets/TypesBG/';
+        $backgrounds = [
+            1 => 'Normal.png', 2 => 'Fighting.png', 3 => 'Fly.png',
+            4 => 'Poison.png', 5 => 'Ground.png', 6 => 'Rock.png',
+            7 => 'Bug.png', 8 => 'Ghost.png', 9 => 'Steel.png',
+            10 => 'Fire.png', 11 => 'Water.png', 12 => 'Grass.png',
+            13 => 'Elek.png', 14 => 'Psy.png', 15 => 'Ice.png',
+            16 => 'Dragon.png', 17 => 'Dark.png', 18 => 'Fairy.png'
+        ];
+        return $baseUrl . ($backgrounds[$id] ?? '');
+    }
+
+
     // table seeders
 
     public function seedTypes()
@@ -257,20 +298,22 @@ class PokemonSeeder extends Seeder
         // store types
         $this->getClass('type', function ($url) use ($dammageRelations) {
             $this->getObject($url, function ($type) use ($dammageRelations) {
-                $spriteUrl = $type->sprites->{'generation-ix'}->{'scarlet-violet'}->name_icon;
-                if ($spriteUrl){
-                    $localType = \App\Models\Type::updateOrCreate([
-                        'id' => $type->id,
-                    ]);
+                $localType = \App\Models\Type::updateOrCreate(
+                    ['id' => $type->id],
+                    [
+                        'color' => $this->getTypeColor($type->id),
+                        'icon' => $this->getTypeIcon($type->id),
+                        'background' => $this->getTypeBackground($type->id),
+                    ]
+                );
 
-                    $this->saveTranslations($localType, $type, [
-                        [
-                            'listName' => 'names',
-                            'name' => 'name',
-                            'localName' => 'name',
-                        ],
-                    ]);
-                }
+                $this->saveTranslations($localType, $type, [
+                   [
+                       'listName' => 'names',
+                       'name' => 'name',
+                       'localName' => 'name',
+                   ],
+                ]);
             });
         });
 
@@ -279,10 +322,17 @@ class PokemonSeeder extends Seeder
             $this->getObject($url, function ($type) use ($dammageRelations) {
                 $localType = \App\Models\Type::find($type->id);
 
+
                 foreach ($dammageRelations as $key => $value) {
                     if (property_exists($type->damage_relations, $key)) {
                         foreach ($type->damage_relations->$key as $relation) {
                             $toType = \App\Models\Type::whereTranslation('name', $relation->name)->first();
+
+                            Log::info("Type interaction:", [
+                                'from' => $type->name,
+                                'to' => $relation->name,
+                                'state' => $value
+                            ]);
 
                             if ($toType) {
                                 TypeInteraction::updateOrCreate([
@@ -343,6 +393,13 @@ class PokemonSeeder extends Seeder
                     'move_damage_class_id' => $damageClass->id,
                     'type_id' => $type->id,
                 ]);
+
+                Log::info("Move data:", [
+                    'name' => $move->name,
+                    'damage_class' => $move->damage_class->name,
+                    'type' => $move->type->name
+                ]);
+
 
                 $this->saveTranslations($localMove, $move, [
                     [

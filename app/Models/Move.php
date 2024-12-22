@@ -15,7 +15,14 @@ class Move extends Model implements TranslatableContract
 
     public $translatedAttributes = ['name','description'];
 
-    protected $fillable=['accuracy','power','pp','priority'];
+    protected $fillable=[
+        'accuracy',
+        'power',
+        'pp',
+        'priority',
+        'move_damage_class_id',
+        'type_id'
+    ];
 
     protected $casts = [
         'accuracy' => 'int',
