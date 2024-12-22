@@ -12,6 +12,6 @@ class TypeInteractionState extends Model
     protected $fillable=['name','multiplier'];
 
     public function typeInteraction(){
-        return $this->hasMany(typeInteraction::class);
+        return $this->belongsToMany(typeInteraction::class);
     }
 }

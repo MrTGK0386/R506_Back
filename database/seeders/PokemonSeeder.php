@@ -394,12 +394,6 @@ class PokemonSeeder extends Seeder
                     'type_id' => $type->id,
                 ]);
 
-                Log::info("Move data:", [
-                    'name' => $move->name,
-                    'damage_class' => $move->damage_class->name,
-                    'type' => $move->type->name
-                ]);
-
 
                 $this->saveTranslations($localMove, $move, [
                     [
