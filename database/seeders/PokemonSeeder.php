@@ -110,11 +110,20 @@ class PokemonSeeder extends Seeder
     {
         $data = $this->request($url);
 
-        /*if (isset ($data->$nameColumn)) {
-            $this->command->info('  🔵 Fetching ' . $data->$nameColumn . '...');
-        }else {
-            $this->command->info('  🔵 Fetching...');
-        }*/
+//        if (isset ($data->$nameColumn)) {
+//            $this->command->info('  🔵 Fetching ' . $data->$nameColumn . '...');
+//        }else {
+//            $this->command->info('  🔵 Fetching...');
+//        }
+
+        Log::info("Raw API data names:", [
+            'names' => collect($data->names)->map(function($name) {
+                return [
+                    'language' => $name->language->name,
+                    'name' => $name->name
+                ];
+            })
+        ]);
 
         return $fn($data);
     }
@@ -142,6 +151,12 @@ class PokemonSeeder extends Seeder
                 if (property_exists($data, $listName) && is_array($data->$listName)) {
                     foreach ($data->$listName as $item) {
                         if (isset($item->language->name) && $item->language->name === $key && isset($item->$name)) {
+                            Log::info("Translation before saving:", [
+                                'locale' => $key,
+                                'field' => $localName,
+                                'value' => strtolower($item->$name),
+                                'data_source' => $listName
+                            ]);
                             $currentLocale[$localName] = $item->$name;
                             break;
                         }
@@ -162,7 +177,7 @@ class PokemonSeeder extends Seeder
 
         foreach ($sortedTranslations as $locale => $fields) {
             foreach ($fields as $field => $value) {
-                $model->translateOrNew($locale)->{$field} = $value;
+                $model->translateOrNew($locale)->{$field} = strtolower($value);
             }
         }
 
@@ -298,6 +313,17 @@ class PokemonSeeder extends Seeder
         // store types
         $this->getClass('type', function ($url) use ($dammageRelations) {
             $this->getObject($url, function ($type) use ($dammageRelations) {
+
+                Log::info("Type data from API:", [
+                    'type_name' => $type->name,
+                    'names' => collect($type->names)->map(function($name) {
+                        return [
+                            'language' => $name->language->name,
+                            'name' => $name->name
+                        ];
+                    })
+                ]);
+
                 $localType = \App\Models\Type::updateOrCreate(
                     ['id' => $type->id],
                     [
@@ -314,6 +340,18 @@ class PokemonSeeder extends Seeder
                        'localName' => 'name',
                    ],
                 ]);
+
+                $savedType = \App\Models\Type::with('translations')->find($type->id);
+                Log::info("Saved type data:", [
+                    'type_id' => $savedType->id,
+                    'translations' => $savedType->translations->map(function($trans) {
+                        return [
+                            'locale' => $trans->locale,
+                            'name' => $trans->name
+                        ];
+                    })
+                ]);
+
             });
         });
 
@@ -376,23 +414,86 @@ class PokemonSeeder extends Seeder
     {
         $this->getClass('move', function ($url) {
             $this->getObject($url, function ($move){
+
+                Log::info("Available types:", [
+                    'types' => \App\Models\Type::with('translations')
+                        ->get()
+                        ->map(function($type) {
+                            return [
+                                'id' => $type->id,
+                                'translations' => $type->translations->pluck('name', 'locale')
+                            ];
+                        })
+                ]);
+
+                Log::info("Processing move:", [
+                    'move_id' => $move->id,
+                    'move_name' => $move->name,
+                    'damage_class' => $move->damage_class->name ?? 'No damage class',
+                    'type' => [
+                        'name' => $move->type->name ?? 'No type',
+                        'url' => $move->type->url ?? 'No url',
+                    ]
+                ]);
+
                 $damageClass = \App\Models\MoveDamageClass::whereTranslation('name', $move->damage_class->name)->first();
                 $type = \App\Models\Type::whereTranslation('name', $move->type->name)->first();
 
-                if (!$damageClass || !$type) {
+
+                Log::info("Found references:", [
+                    'damage_class_found' => $damageClass ? true : false,
+                    'damage_class_id' => $damageClass ? $damageClass->id : null,
+                    'type_found' => $type ? true : false,
+                    'type_id' => $type ? $type->id : null
+                ]);
+
+                $damageClassCount = \App\Models\MoveDamageClass::count();
+                $typeCount = \App\Models\Type::count();
+
+                Log::info("Prerequisites check:", [
+                    'damage_classes_count' => $damageClassCount,
+                    'types_count' => $typeCount
+                ]);
+
+                if ($damageClassCount == 0 || $typeCount == 0) {
+                    Log::error("Prerequisites not met for seeding moves");
                     return;
                 }
 
-                $localMove = \App\Models\Move::updateOrCreate([
-                    'id' => $move->id,
-                ], [
-                    'power' => $move->power,
-                    'pp' => $move->pp,
-                    'priority' => $move->priority,
-                    'accuracy' => $move->accuracy,
-                    'move_damage_class_id' => $damageClass->id,
-                    'type_id' => $type->id,
-                ]);
+                if (!$damageClass || !$type) {
+                    Log::warning("Skipping move due to missing references:", [
+                        'move_name' => $move->name,
+                        'missing_damage_class' => !$damageClass,
+                        'missing_type' => !$type
+                    ]);
+                    return;
+                }
+
+                try {
+                    $localMove = \App\Models\Move::updateOrCreate([
+                        'id' => $move->id,
+                    ], [
+                        'power' => $move->power,
+                        'pp' => $move->pp,
+                        'priority' => $move->priority,
+                        'accuracy' => $move->accuracy,
+                        'move_damage_class_id' => $damageClass->id,
+                        'type_id' => $type->id,
+                    ]);
+
+                    Log::info("Successfully created/updated move:", [
+                        'move_id' => $localMove->id,
+                        'move_name' => $move->name
+                    ]);
+
+                } catch (\Exception $e) {
+
+                    Log::error("Error creating move:", [
+                        'move_name' => $move->name,
+                        'error' => $e->getMessage()
+                    ]);
+
+                }
 
 
                 $this->saveTranslations($localMove, $move, [
