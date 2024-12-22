@@ -44,6 +44,6 @@ class Move extends Model implements TranslatableContract
     }
 
     public function types(){
-        return $this->HasMany(Type::class,'type_id');
+        return $this->belongsTo(Type::class,'type_id');
     }
 }

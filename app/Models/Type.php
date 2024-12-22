@@ -25,14 +25,14 @@ class Type extends Model implements TranslatableContract
 
     public function interactTo()
     {
-        return $this->belongsToMany(Type::class, 'type_interactions', 'from_type_id', 'to_type_id')
+        return $this->hasMany(Type::class, 'type_interactions', 'from_type_id', 'to_type_id')
             ->withPivot('type_interaction_state_id');
     }
 
     public function interactedBy()
     {
-        return $this->belongsToMany(Type::class, 'type_interactions', 'to_type_id', 'from_type_id')
-            ->withPivot('type_interaction_state_id');
+        return $this->hasMany(Type::class, 'type_interactions', 'to_type_id', 'from_type_id')
+            ->withPivot('tpe_interaction_state_id');
     }
 
     public function pokemonVarietyType()
