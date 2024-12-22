@@ -261,8 +261,6 @@ class PokemonSeeder extends Seeder
                 if ($spriteUrl){
                     $localType = \App\Models\Type::updateOrCreate([
                         'id' => $type->id,
-                    ], [
-                        'sprite_url' => $type->sprites->{'generation-ix'}->{'scarlet-violet'}->name_icon,
                     ]);
 
                     $this->saveTranslations($localType, $type, [
