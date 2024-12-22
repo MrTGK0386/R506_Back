@@ -17,6 +17,13 @@ class Move extends Model implements TranslatableContract
 
     protected $fillable=['accuracy','power','pp','priority'];
 
+    protected $casts = [
+        'accuracy' => 'int',
+        'power' => 'int',
+        'pp' => 'int',
+        'priority' => 'int',
+    ];
+
     public function pokemonEvolution(){
         return $this->hasMany(PokemonEvolution::class);
     }
@@ -30,6 +37,6 @@ class Move extends Model implements TranslatableContract
     }
 
     public function types(){
-        return $this->belongsTo(Type::class);
+        return $this->belongsToMany(Type::class);
     }
 }

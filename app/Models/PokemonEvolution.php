@@ -11,6 +11,29 @@ class PokemonEvolution extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'gender',
+        'location',
+        'min_affection',
+        'min_happiness',
+        'min_level',
+        'need_overworld_rain',
+        'relative_physical_stats',
+        'time_of_day',
+        'turn_upside_down'];
+
+    protected $casts = [
+        'gender' => 'boolean',
+        'location'=>'string',
+        'min_affection'=>'integer',
+        'min_happiness'=>'integer',
+        'min_level'=>'integer',
+        'need_overworld_rain'=>'boolean',
+        'relative_physical_stats'=>'integer',
+        'time_of_day'=>'string',
+        'turn_upside_down'=>'boolean',
+    ];
+
     public function varietyId(){
         return $this->belongsTo(pokemonVariety::class, 'pokemon_variety_id');
     }
